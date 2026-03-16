@@ -1,0 +1,46 @@
+[
+  {
+    "id": "project-1",
+    "title": "Mobile App — [Your App Name]",
+    "description": "A full-featured mobile application built with React Native and Expo. Includes authentication, real-time data, push notifications, and offline support.",
+    "tags": ["React Native", "Expo", "Node.js", "PostgreSQL"],
+    "image": "/images/projects/project-1.png",
+    "live": "",
+    "github": "https://github.com/yourusername/your-app",
+    "featured": true,
+    "color": "#00d4ff"
+  },
+  {
+    "id": "project-2",
+    "title": "API Platform — [Your Project]",
+    "description": "Scalable REST API with JWT auth, rate limiting, and full OpenAPI documentation. Deployed on GCP Cloud Run with CI/CD via GitHub Actions.",
+    "tags": ["FastAPI", "GCP", "Docker", "PostgreSQL", "GitHub Actions"],
+    "image": "/images/projects/project-2.png",
+    "live": "",
+    "github": "https://github.com/yourusername/your-api",
+    "featured": true,
+    "color": "#7c3aed"
+  },
+  {
+    "id": "project-3",
+    "title": "Automation System — [Your Tool]",
+    "description": "End-to-end automation pipeline using Python and n8n. Integrates multiple SaaS tools, processes data, and sends intelligent notifications.",
+    "tags": ["Python", "n8n", "Automation", "Azure", "REST APIs"],
+    "image": "/images/projects/project-3.png",
+    "live": "",
+    "github": "https://github.com/yourusername/your-automation",
+    "featured": false,
+    "color": "#f59e0b"
+  },
+  {
+    "id": "project-4",
+    "title": "This Portfolio",
+    "description": "A world-class 3D interactive portfolio built with Next.js, React Three Fiber, GSAP, and Lenis. 100% JSON-driven, deployed on Vercel. Zero dollars spent.",
+    "tags": ["Next.js", "Three.js", "GSAP", "Vercel", "TypeScript"],
+    "image": "/images/projects/project-4.png",
+    "live": "https://your-portfolio.vercel.app",
+    "github": "https://github.com/yourusername/portfolio",
+    "featured": true,
+    "color": "#10b981"
+  }
+]

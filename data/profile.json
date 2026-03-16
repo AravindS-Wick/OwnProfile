@@ -1,0 +1,31 @@
+{
+  "name": "Aravindhan",
+  "title": "Full Stack Developer",
+  "tagline": "Building the future, one API at a time",
+  "taglines": [
+    "Full Stack Developer",
+    "UI Craftsman",
+    "API Architect",
+    "Cloud Engineer",
+    "AI Prompt Engineer",
+    "Tech Geek & Dreamer"
+  ],
+  "bio": "I'm a full-stack developer obsessed with building things that matter. From pixel-perfect UIs to rock-solid APIs, cloud infrastructure to mobile apps — I run the full stack with high ambition and zero limits. Certified in GCP and Azure. Fluent in AI prompting and vibe coding. If there's a working repo and solid docs, I can pick up any language or framework. Currently open to new projects and collaborations.",
+  "location": "India",
+  "available": true,
+  "openToWork": true,
+  "email": "your@outlook.com",
+  "resumeUrl": "/resume.pdf",
+  "socials": {
+    "github": "https://github.com/yourusername",
+    "linkedin": "https://linkedin.com/in/yourusername",
+    "twitter": "",
+    "instagram": ""
+  },
+  "stats": [
+    { "label": "Projects Completed", "value": "20+" },
+    { "label": "Technologies", "value": "15+" },
+    { "label": "Certifications", "value": "2" },
+    { "label": "Years Experience", "value": "3+" }
+  ]
+}

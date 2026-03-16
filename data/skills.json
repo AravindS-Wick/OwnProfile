@@ -1,0 +1,82 @@
+{
+  "categories": [
+    {
+      "id": "ui",
+      "label": "UI / Frontend",
+      "color": "#00d4ff",
+      "icon": "monitor",
+      "skills": [
+        { "name": "React", "level": 90 },
+        { "name": "Next.js", "level": 88 },
+        { "name": "Three.js", "level": 75 },
+        { "name": "Tailwind CSS", "level": 92 },
+        { "name": "TypeScript", "level": 85 },
+        { "name": "Figma", "level": 70 }
+      ]
+    },
+    {
+      "id": "api",
+      "label": "API / Backend",
+      "color": "#7c3aed",
+      "icon": "server",
+      "skills": [
+        { "name": "Node.js", "level": 88 },
+        { "name": "FastAPI", "level": 80 },
+        { "name": "REST APIs", "level": 92 },
+        { "name": "GraphQL", "level": 75 },
+        { "name": "WebSockets", "level": 70 },
+        { "name": "PostgreSQL", "level": 82 }
+      ]
+    },
+    {
+      "id": "automation",
+      "label": "Automation",
+      "color": "#f59e0b",
+      "icon": "zap",
+      "skills": [
+        { "name": "Python", "level": 85 },
+        { "name": "GitHub Actions", "level": 80 },
+        { "name": "n8n", "level": 72 },
+        { "name": "Shell Scripts", "level": 78 },
+        { "name": "Zapier", "level": 65 }
+      ]
+    },
+    {
+      "id": "cloud",
+      "label": "Cloud & DevOps",
+      "color": "#10b981",
+      "icon": "cloud",
+      "skills": [
+        { "name": "GCP", "level": 85 },
+        { "name": "Azure", "level": 80 },
+        { "name": "Docker", "level": 78 },
+        { "name": "Kubernetes", "level": 65 },
+        { "name": "Vercel", "level": 92 },
+        { "name": "CI/CD", "level": 80 }
+      ]
+    },
+    {
+      "id": "mobile",
+      "label": "Mobile",
+      "color": "#f43f5e",
+      "icon": "smartphone",
+      "skills": [
+        { "name": "React Native", "level": 78 },
+        { "name": "Expo", "level": 75 }
+      ]
+    },
+    {
+      "id": "ai",
+      "label": "AI & Vibe Coding",
+      "color": "#a78bfa",
+      "icon": "brain",
+      "skills": [
+        { "name": "Prompt Engineering", "level": 90 },
+        { "name": "Claude API", "level": 85 },
+        { "name": "LangChain", "level": 72 },
+        { "name": "Vibe Coding", "level": 92 },
+        { "name": "OpenAI API", "level": 80 }
+      ]
+    }
+  ]
+}

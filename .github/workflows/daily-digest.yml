@@ -1,0 +1,42 @@
+name: Daily Order Digest
+
+on:
+  schedule:
+    # 9:00 PM IST = 15:30 UTC (IST is UTC+5:30)
+    - cron: "30 15 * * *"
+
+  # Manual trigger for testing — run from GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  send-digest:
+    name: Send Daily Order Digest
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Call digest endpoint
+        env:
+          PORTFOLIO_URL: ${{ secrets.PORTFOLIO_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          echo "Sending daily digest at $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+
+          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
+            "${PORTFOLIO_URL}/api/cron" \
+            -H "Content-Type: application/json" \
+            -H "x-cron-secret: ${CRON_SECRET}" \
+            --max-time 30)
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          BODY=$(echo "$RESPONSE" | head -n-1)
+
+          echo "Response code: $HTTP_CODE"
+          echo "Response body: $BODY"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "❌ Digest failed with HTTP $HTTP_CODE"
+            exit 1
+          fi
+
+          echo "✅ Daily digest sent successfully"

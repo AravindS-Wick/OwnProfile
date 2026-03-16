@@ -1,0 +1,20 @@
+[
+  {
+    "id": "cert-gcp",
+    "name": "Google Cloud Professional",
+    "issuer": "Google Cloud",
+    "year": 2024,
+    "badge": "/images/certs/gcp.png",
+    "color": "#4285F4",
+    "verifyUrl": ""
+  },
+  {
+    "id": "cert-azure",
+    "name": "Microsoft Azure Fundamentals",
+    "issuer": "Microsoft",
+    "year": 2024,
+    "badge": "/images/certs/azure.png",
+    "color": "#0078D4",
+    "verifyUrl": ""
+  }
+]

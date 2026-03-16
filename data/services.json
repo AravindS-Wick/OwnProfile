@@ -1,0 +1,77 @@
+[
+  {
+    "id": "ui-dev",
+    "title": "UI Development",
+    "description": "Pixel-perfect, responsive, and animated web interfaces. React, Next.js, Tailwind, 3D experiences with Three.js.",
+    "price": "Starting $500",
+    "icon": "monitor",
+    "color": "#00d4ff",
+    "features": [
+      "React / Next.js development",
+      "3D interactive experiences",
+      "Mobile-first responsive design",
+      "Performance optimization",
+      "Animation with GSAP / Framer Motion"
+    ]
+  },
+  {
+    "id": "api-dev",
+    "title": "API Development",
+    "description": "Scalable, documented, and secure REST or GraphQL APIs. Node.js, FastAPI, deployed on GCP or Azure.",
+    "price": "Starting $400",
+    "icon": "server",
+    "color": "#7c3aed",
+    "features": [
+      "REST & GraphQL API design",
+      "Authentication & authorization",
+      "API documentation (OpenAPI)",
+      "Database design & optimization",
+      "Cloud deployment & scaling"
+    ]
+  },
+  {
+    "id": "automation",
+    "title": "Automation & AI Integration",
+    "description": "Automate your workflows, integrate AI/LLM features, connect your tools with smart pipelines.",
+    "price": "Starting $300",
+    "icon": "zap",
+    "color": "#f59e0b",
+    "features": [
+      "Workflow automation (n8n, Python)",
+      "AI / LLM integration",
+      "Prompt engineering",
+      "API integrations",
+      "Scheduled jobs & CRON"
+    ]
+  },
+  {
+    "id": "mobile",
+    "title": "Mobile App Development",
+    "description": "Cross-platform mobile apps with React Native & Expo. iOS and Android from a single codebase.",
+    "price": "Starting $800",
+    "icon": "smartphone",
+    "color": "#f43f5e",
+    "features": [
+      "React Native / Expo apps",
+      "iOS & Android support",
+      "Push notifications",
+      "Offline-first architecture",
+      "App store deployment"
+    ]
+  },
+  {
+    "id": "fullstack",
+    "title": "Full Stack Project",
+    "description": "End-to-end product development — from design to deployment. UI + API + Cloud + CI/CD, all handled.",
+    "price": "Starting $1200",
+    "icon": "layers",
+    "color": "#10b981",
+    "features": [
+      "Complete product development",
+      "Frontend + Backend + Database",
+      "Cloud infrastructure setup",
+      "CI/CD pipeline",
+      "Ongoing support & maintenance"
+    ]
+  }
+]

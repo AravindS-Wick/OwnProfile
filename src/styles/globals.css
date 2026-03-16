@@ -1,0 +1,160 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS Custom Properties ──────────────────────────────────────────────── */
+:root {
+  --navy: #0a0e1a;
+  --surface: #0f1629;
+  --border: #1e2a45;
+  --cyan: #00d4ff;
+  --cyan-dim: #00a8cc;
+  --purple: #7c3aed;
+  --purple-dim: #5b21b6;
+  --text: #e2e8f0;
+  --text-muted: #64748b;
+}
+
+/* ─── Base ───────────────────────────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: auto; /* Lenis handles smooth scroll */
+  background: var(--navy);
+}
+
+body {
+  background: var(--navy);
+  color: var(--text);
+  font-family: "Inter", system-ui, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--navy);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cyan-dim);
+}
+
+/* ─── Selection ──────────────────────────────────────────────────────────── */
+::selection {
+  background: var(--cyan);
+  color: var(--navy);
+}
+
+/* ─── Typography ─────────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5 {
+  font-family: "Syne", sans-serif;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+/* ─── Utilities ──────────────────────────────────────────────────────────── */
+.text-gradient {
+  background: linear-gradient(135deg, var(--cyan) 0%, var(--purple) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glow-cyan {
+  box-shadow: 0 0 20px #00d4ff33, 0 0 40px #00d4ff11;
+}
+
+.glow-purple {
+  box-shadow: 0 0 20px #7c3aed33, 0 0 40px #7c3aed11;
+}
+
+.glass {
+  background: rgba(15, 22, 41, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(30, 42, 69, 0.8);
+}
+
+.section-heading {
+  font-family: "Syne", sans-serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.section-label {
+  font-family: "Inter", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+/* ─── Canvas overlay fix ─────────────────────────────────────────────────── */
+canvas {
+  outline: none;
+}
+
+/* ─── Animation classes ──────────────────────────────────────────────────── */
+.gsap-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+/* ─── Noise texture overlay for depth ───────────────────────────────────── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* ─── Scroll architecture ────────────────────────────────────────────────── */
+/* Ensure the body height is driven by our scroll container */
+body {
+  overflow-x: hidden;
+}
+
+/* Each scene panel sits sticky inside its 100vh slot */
+.scene-panel {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ─── Code rain animation ────────────────────────────────────────────────── */
+@keyframes rain-fall {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+/* ─── Section spacing (kept for any standalone uses) ─────────────────────── */
+.section {
+  padding: 6rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding: 8rem 2rem;
+  }
+}

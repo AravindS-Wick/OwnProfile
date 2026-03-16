@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import "@/styles/globals.css";
 import { getProfile } from "@/lib/data";
+
+const CursorProvider = dynamic(() => import("@/components/ui/CursorProvider"), { ssr: false });
+const LoadingScreen = dynamic(() => import("@/components/ui/LoadingScreen"), { ssr: false });
+const EasterEgg = dynamic(() => import("@/components/ui/EasterEgg"), { ssr: false });
 
 export async function generateMetadata(): Promise<Metadata> {
   const profile = getProfile();
@@ -52,7 +57,12 @@ export default function RootLayout({
         />
         <meta name="theme-color" content="#0a0e1a" />
       </head>
-      <body>{children}</body>
+      <body>
+        <LoadingScreen />
+        <CursorProvider />
+        <EasterEgg />
+        {children}
+      </body>
     </html>
   );
 }

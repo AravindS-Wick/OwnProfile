@@ -8,158 +8,223 @@ interface HeroProps {
   profile: Profile;
 }
 
-export default function Hero({ profile }: HeroProps) {
-  const currentScene = useScrollStore((s) => s.currentScene);
-  const active = currentScene === 0;
-
-  const [displayed, setDisplayed] = useState("");
-  const [taglineIdx, setTaglineIdx] = useState(0);
-  const [typing, setTyping] = useState(true);
-
-  useEffect(() => {
-    const tagline = profile.taglines[taglineIdx];
-    let t: ReturnType<typeof setTimeout>;
-    if (typing) {
-      if (displayed.length < tagline.length) {
-        t = setTimeout(() => setDisplayed(tagline.slice(0, displayed.length + 1)), 65);
-      } else {
-        t = setTimeout(() => setTyping(false), 2200);
-      }
-    } else {
-      if (displayed.length > 0) {
-        t = setTimeout(() => setDisplayed(displayed.slice(0, -1)), 28);
-      } else {
-        setTaglineIdx((i) => (i + 1) % profile.taglines.length);
-        setTyping(true);
-      }
-    }
-    return () => clearTimeout(t);
-  }, [displayed, typing, taglineIdx, profile.taglines]);
+// Scrolling marquee band
+function MarqueeBand({ active }: { active: boolean }) {
+  const items = [
+    "Full Stack Developer",
+    "React · Next.js",
+    "GCP Certified",
+    "Azure Certified",
+    "AI Integration",
+    "Three.js · GSAP",
+    "React Native",
+    "FastAPI · Node.js",
+  ];
+  const doubled = [...items, ...items];
 
   return (
     <div
-      className="absolute inset-0 flex items-center transition-all duration-1000"
+      className="overflow-hidden border-y border-[var(--border)] py-3"
       style={{
         opacity: active ? 1 : 0,
-        transform: active ? "translateY(0)" : "translateY(-40px)",
+        transition: "opacity 0.6s ease 1.2s",
       }}
     >
-      {/* Left gradient edge */}
-      <div className="absolute left-0 top-0 bottom-0 w-1/2 bg-gradient-to-r from-[#0a0e1a]/90 to-transparent pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0e1a]/40 via-transparent to-[#0a0e1a]/80 pointer-events-none" />
+      <div className="marquee-track flex gap-10 w-max">
+        {doubled.map((item, i) => (
+          <span key={i} className="text-[11px] font-semibold tracking-[0.25em] uppercase text-[var(--text-muted)] whitespace-nowrap flex items-center gap-3">
+            <span className="w-1 h-1 rounded-full bg-[var(--cyan)] inline-block" />
+            {item}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10 w-full">
-        <div className="max-w-2xl">
-          {/* Available pill */}
+export default function Hero({ profile }: HeroProps) {
+  const currentScene = useScrollStore((s) => s.currentScene);
+  const active = currentScene === 0;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    if (active) setMounted(true);
+  }, [active]);
+
+  const firstName = profile.name.split(" ")[0] ?? profile.name;
+  const lastName = profile.name.split(" ").slice(1).join(" ");
+
+  return (
+    <div
+      className="absolute inset-0 flex flex-col"
+      style={{
+        opacity: active ? 1 : 0,
+        transition: "opacity 0.8s ease",
+      }}
+    >
+      {/* Dark gradient on left */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[var(--navy)]/90 via-[var(--navy)]/50 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[var(--navy)]/60 via-transparent to-[var(--navy)]/70 pointer-events-none" />
+
+      {/* Main content — vertically centered */}
+      <div className="relative z-10 flex-1 flex flex-col justify-center max-w-7xl mx-auto px-6 sm:px-10 w-full">
+
+        {/* Top label */}
+        <div
+          className="flex items-center gap-3 mb-6"
+          style={{
+            opacity: mounted ? 1 : 0,
+            transform: mounted ? "translateY(0)" : "translateY(16px)",
+            transition: "all 0.6s ease 0.1s",
+          }}
+        >
           {profile.available && (
-            <div
-              className="inline-flex items-center gap-2 glass rounded-full px-4 py-1.5 mb-8 text-xs text-[#00d4ff] font-semibold tracking-widest uppercase"
+            <>
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10b981] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10b981]" />
+              </span>
+              <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[#10b981]">Available for work</span>
+              <span className="text-[var(--border)]">·</span>
+            </>
+          )}
+          <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[var(--text-muted)]">{profile.location}</span>
+        </div>
+
+        {/* Name — large editorial display */}
+        <div className="mb-4 overflow-hidden">
+          <h1
+            className="font-display font-black leading-none text-white hero-title"
+            style={{ fontSize: "clamp(4rem, 12vw, 10rem)" }}
+          >
+            <span
+              className="block overflow-hidden"
               style={{
-                opacity: active ? 1 : 0,
-                transform: active ? "translateY(0)" : "translateY(20px)",
-                transition: "all 0.7s ease 0.1s",
+                clipPath: mounted ? "inset(0 0 0 0)" : "inset(0 0 100% 0)",
+                transition: "clip-path 0.9s cubic-bezier(.16,1,.3,1) 0.2s",
               }}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#00d4ff] animate-pulse" />
-              Open for projects
-            </div>
-          )}
-
-          {/* Name */}
-          <h1
-            className="font-display font-black text-white leading-[0.95] mb-4"
-            style={{
-              fontSize: "clamp(3.5rem, 9vw, 7rem)",
-              opacity: active ? 1 : 0,
-              transform: active ? "translateY(0)" : "translateY(30px)",
-              transition: "all 0.8s cubic-bezier(.16,1,.3,1) 0.2s",
-            }}
-          >
-            {profile.name}
-            <span className="text-gradient">.</span>
+              {firstName}
+            </span>
+            {lastName && (
+              <span
+                className="block overflow-hidden text-gradient"
+                style={{
+                  clipPath: mounted ? "inset(0 0 0 0)" : "inset(0 0 100% 0)",
+                  transition: "clip-path 0.9s cubic-bezier(.16,1,.3,1) 0.4s",
+                }}
+              >
+                {lastName}
+              </span>
+            )}
+            {!lastName && (
+              <span
+                className="text-gradient"
+                style={{
+                  clipPath: mounted ? "inset(0 0 0 0)" : "inset(0 0 100% 0)",
+                  transition: "clip-path 0.9s cubic-bezier(.16,1,.3,1) 0.4s",
+                }}
+              >
+                .
+              </span>
+            )}
           </h1>
+        </div>
 
-          {/* Typewriter */}
-          <div
-            className="text-xl sm:text-2xl font-display font-semibold text-[#94a3b8] mb-6 h-9 flex items-center"
-            style={{
-              opacity: active ? 1 : 0,
-              transform: active ? "translateY(0)" : "translateY(20px)",
-              transition: "all 0.8s cubic-bezier(.16,1,.3,1) 0.35s",
-            }}
-          >
-            <span className="text-white">{displayed}</span>
-            <span className="ml-0.5 inline-block w-0.5 h-6 bg-[#00d4ff] animate-pulse" />
+        {/* Role + bio row */}
+        <div className="grid lg:grid-cols-2 gap-8 items-end mb-10">
+          <div>
+            <p
+              className="text-[var(--text-muted)] text-base leading-relaxed max-w-lg"
+              style={{
+                opacity: mounted ? 1 : 0,
+                transform: mounted ? "translateY(0)" : "translateY(20px)",
+                transition: "all 0.7s ease 0.7s",
+              }}
+            >
+              {profile.bio}
+            </p>
           </div>
 
-          {/* Bio */}
-          <p
-            className="text-[#64748b] text-base leading-relaxed max-w-lg mb-10"
-            style={{
-              opacity: active ? 1 : 0,
-              transform: active ? "translateY(0)" : "translateY(20px)",
-              transition: "all 0.8s cubic-bezier(.16,1,.3,1) 0.45s",
-            }}
-          >
-            {profile.bio.slice(0, 180)}...
-          </p>
-
-          {/* Stats */}
+          {/* Stats — right side, editorial numbers */}
           <div
-            className="flex flex-wrap gap-8 mb-10"
+            className="grid grid-cols-4 gap-4 lg:justify-items-end"
             style={{
-              opacity: active ? 1 : 0,
-              transform: active ? "translateY(0)" : "translateY(20px)",
-              transition: "all 0.8s cubic-bezier(.16,1,.3,1) 0.5s",
+              opacity: mounted ? 1 : 0,
+              transform: mounted ? "translateY(0)" : "translateY(20px)",
+              transition: "all 0.7s ease 0.85s",
             }}
           >
             {profile.stats.map((s) => (
-              <div key={s.label}>
-                <div className="text-3xl font-display font-black text-gradient">{s.value}</div>
-                <div className="text-[10px] text-[#64748b] tracking-wider uppercase mt-1">{s.label}</div>
+              <div key={s.label} className="text-right">
+                <div
+                  className="font-display font-black text-white leading-none"
+                  style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)" }}
+                >
+                  {s.value}
+                </div>
+                <div className="text-[9px] text-[var(--text-muted)] tracking-wider uppercase mt-1 leading-tight">{s.label}</div>
               </div>
             ))}
           </div>
+        </div>
 
-          {/* CTAs */}
-          <div
-            className="flex flex-wrap gap-3"
-            style={{
-              opacity: active ? 1 : 0,
-              transform: active ? "translateY(0)" : "translateY(20px)",
-              transition: "all 0.8s cubic-bezier(.16,1,.3,1) 0.6s",
-            }}
+        {/* CTAs */}
+        <div
+          className="flex flex-wrap gap-4"
+          style={{
+            opacity: mounted ? 1 : 0,
+            transform: mounted ? "translateY(0)" : "translateY(20px)",
+            transition: "all 0.7s ease 1s",
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => (window as Window & { scrollToScene?: (i: number) => void }).scrollToScene?.(3)}
+            className="group relative px-8 py-3.5 rounded-full font-bold text-sm overflow-hidden"
+            style={{ background: "var(--cyan)", color: "var(--navy)" }}
           >
-            <button
-              type="button"
-              onClick={() => (window as Window & { scrollToScene?: (i: number) => void }).scrollToScene?.(2)}
-              className="px-7 py-3 rounded-2xl font-bold text-sm bg-gradient-to-r from-[#00d4ff] to-[#7c3aed] text-[#0a0e1a] hover:scale-105 active:scale-95 transition-transform shadow-lg shadow-[#00d4ff22]"
+            <span className="relative z-10">View Work</span>
+            <span
+              className="absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
+              style={{ background: "var(--purple)" }}
+            />
+          </button>
+          <button
+            type="button"
+            onClick={() => (window as Window & { scrollToScene?: (i: number) => void }).scrollToScene?.(7)}
+            className="px-8 py-3.5 rounded-full font-bold text-sm border border-[var(--border)] text-white hover:border-[var(--cyan)] hover:text-[var(--cyan)] transition-all duration-300"
+          >
+            Hire Me
+          </button>
+          {profile.socials.github && (
+            <a
+              href={profile.socials.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-8 py-3.5 rounded-full text-sm text-[var(--text-muted)] hover:text-white transition-colors duration-300"
             >
-              See My Work
-            </button>
-            <button
-              type="button"
-              onClick={() => (window as Window & { scrollToScene?: (i: number) => void }).scrollToScene?.(7)}
-              className="px-7 py-3 rounded-2xl font-bold text-sm glass border border-[#1e2a45] text-white hover:border-[#00d4ff] hover:scale-105 active:scale-95 transition-all"
-            >
-              Hire Me →
-            </button>
-          </div>
+              GitHub ↗
+            </a>
+          )}
         </div>
       </div>
 
-      {/* Scroll hint (only on scene 0, before user has scrolled) */}
+      {/* Marquee band — bottom of section */}
+      <div className="relative z-10 mb-16">
+        <MarqueeBand active={active} />
+      </div>
+
+      {/* Scroll indicator */}
       <div
-        className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        className="absolute bottom-6 right-8 z-10 flex items-center gap-3"
         style={{
-          opacity: active ? 0.5 : 0,
-          transition: "opacity 0.5s ease",
+          opacity: mounted ? 0.5 : 0,
+          transition: "opacity 0.5s ease 1.4s",
         }}
       >
-        <div className="w-5 h-8 rounded-full border border-[#2e3a55] flex items-start justify-center pt-1.5">
-          <div className="w-1 h-2 rounded-full bg-[#64748b] animate-bounce" />
-        </div>
-        <span className="text-[9px] tracking-[0.3em] uppercase text-[#2e3a55]">scroll</span>
+        <span className="text-[9px] tracking-[0.3em] uppercase text-[var(--text-muted)]">scroll</span>
+        <div className="w-12 h-px bg-gradient-to-r from-transparent to-[var(--cyan)]" />
       </div>
     </div>
   );

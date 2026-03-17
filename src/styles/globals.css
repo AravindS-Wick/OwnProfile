@@ -3,28 +3,30 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── CSS Custom Properties ──────────────────────────────────────────────── */
+/* ─── CSS Custom Properties (default: cyberpunk theme) ───────────────────── */
 :root {
   --navy: #0a0e1a;
+  --navy-85: rgba(10, 14, 26, 0.85);
   --surface: #0f1629;
   --border: #1e2a45;
   --cyan: #00d4ff;
-  --cyan-dim: #00a8cc;
+  --cyan-dim: #00d4ffcc;
+  --cyan-tint: #00d4ff18;
   --purple: #7c3aed;
-  --purple-dim: #5b21b6;
-  --text: #e2e8f0;
-  --text-muted: #64748b;
+  --purple-dim: #7c3aed99;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
 }
 
 /* ─── Base ───────────────────────────────────────────────────────────────── */
-* {
+*, *::before, *::after {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
 }
 
 html {
-  scroll-behavior: auto; /* Lenis handles smooth scroll */
+  scroll-behavior: auto;
   background: var(--navy);
 }
 
@@ -38,31 +40,19 @@ body {
 }
 
 /* ─── Scrollbar ──────────────────────────────────────────────────────────── */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--navy);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--cyan-dim);
-}
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--navy); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--cyan-dim); }
 
 /* ─── Selection ──────────────────────────────────────────────────────────── */
-::selection {
-  background: var(--cyan);
-  color: var(--navy);
-}
+::selection { background: var(--cyan); color: var(--navy); }
 
 /* ─── Typography ─────────────────────────────────────────────────────────── */
 h1, h2, h3, h4, h5 {
   font-family: "Syne", sans-serif;
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 /* ─── Utilities ──────────────────────────────────────────────────────────── */
@@ -73,18 +63,10 @@ h1, h2, h3, h4, h5 {
   background-clip: text;
 }
 
-.glow-cyan {
-  box-shadow: 0 0 20px #00d4ff33, 0 0 40px #00d4ff11;
-}
-
-.glow-purple {
-  box-shadow: 0 0 20px #7c3aed33, 0 0 40px #7c3aed11;
-}
-
 .glass {
   background: rgba(15, 22, 41, 0.6);
-  backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
   border: 1px solid rgba(30, 42, 69, 0.8);
 }
 
@@ -92,34 +74,27 @@ h1, h2, h3, h4, h5 {
   font-family: "Syne", sans-serif;
   font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1.2;
+  padding-bottom: 0.1em;
 }
 
 .section-label {
   font-family: "Inter", sans-serif;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--cyan);
 }
 
-/* ─── Canvas overlay fix ─────────────────────────────────────────────────── */
-canvas {
-  outline: none;
-}
+/* ─── Canvas ─────────────────────────────────────────────────────────────── */
+canvas { outline: none; }
 
-/* ─── Animation classes ──────────────────────────────────────────────────── */
-.gsap-reveal {
-  opacity: 0;
-  transform: translateY(40px);
-}
-
-/* ─── Film grain + noise overlay ─────────────────────────────────────────── */
+/* ─── Film grain overlay ─────────────────────────────────────────────────── */
 @keyframes grain {
-  0%, 100% { transform: translate(0, 0); }
-  10%       { transform: translate(-2%, -3%); }
-  20%       { transform: translate(3%, 2%); }
+  0%, 100% { transform: translate(0,   0);   }
+  10%       { transform: translate(-2%,-3%); }
+  20%       { transform: translate(3%,  2%); }
   30%       { transform: translate(-1%, 4%); }
   40%       { transform: translate(4%, -1%); }
   50%       { transform: translate(-3%, 1%); }
@@ -138,34 +113,50 @@ body::before {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: 9999;
-  opacity: 0.35;
+  opacity: 0.25;
   animation: grain 0.2s steps(1) infinite;
 }
 
-/* ─── Ambient glow blobs (bloom effect) ──────────────────────────────────── */
+/* ─── Ambient glow blobs ─────────────────────────────────────────────────── */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(0, 212, 255, 0.04) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 35% at 20% 80%, rgba(124, 58, 237, 0.04) 0%, transparent 60%);
+    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(0,212,255,0.03) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 35% at 20% 80%, rgba(124,58,237,0.03) 0%, transparent 60%);
   pointer-events: none;
   z-index: 1;
 }
 
 /* ─── Scroll architecture ────────────────────────────────────────────────── */
-/* Ensure the body height is driven by our scroll container */
-body {
-  overflow-x: hidden;
-}
+body { overflow-x: hidden; }
 
-/* Each scene panel sits sticky inside its 100vh slot */
 .scene-panel {
   position: relative;
   width: 100%;
   height: 100vh;
   overflow: hidden;
+}
+
+/* ─── Marquee ────────────────────────────────────────────────────────────── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee 28s linear infinite;
+  will-change: transform;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ─── Clip-path hero title entrance ──────────────────────────────────────── */
+.hero-title span {
+  display: block;
 }
 
 /* ─── Code rain animation ────────────────────────────────────────────────── */
@@ -174,7 +165,7 @@ body {
   100% { transform: translateY(100%); }
 }
 
-/* ─── Section spacing (kept for any standalone uses) ─────────────────────── */
+/* ─── Section spacing ────────────────────────────────────────────────────── */
 .section {
   padding: 6rem 1.5rem;
   max-width: 1200px;
@@ -182,7 +173,11 @@ body {
 }
 
 @media (min-width: 768px) {
-  .section {
-    padding: 8rem 2rem;
-  }
+  .section { padding: 8rem 2rem; }
+}
+
+/* ─── GSAP reveal helper ─────────────────────────────────────────────────── */
+.gsap-reveal {
+  opacity: 0;
+  transform: translateY(40px);
 }

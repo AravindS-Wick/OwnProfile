@@ -13,8 +13,8 @@ function ProjectCard({ project, active }: { project: Project; active: boolean })
     <div
       className={`flex-shrink-0 w-80 sm:w-96 glass rounded-3xl overflow-hidden border transition-all duration-500 ${
         active
-          ? "border-[#00d4ff44] scale-105 shadow-xl shadow-[#00d4ff11]"
-          : "border-[#1e2a45] scale-95 opacity-60"
+          ? "border-[var(--cyan-dim)] scale-105 shadow-xl shadow-[var(--cyan-tint)]"
+          : "border-[var(--border)] scale-95 opacity-60"
       }`}
     >
       {/* Image placeholder */}
@@ -52,7 +52,7 @@ function ProjectCard({ project, active }: { project: Project; active: boolean })
         <h3 className="font-display font-bold text-white text-lg mb-2 leading-tight">
           {project.title}
         </h3>
-        <p className="text-[#64748b] text-sm leading-relaxed mb-4 line-clamp-3">
+        <p className="text-[var(--text-muted)] text-sm leading-relaxed mb-4 line-clamp-3">
           {project.description}
         </p>
 
@@ -79,7 +79,7 @@ function ProjectCard({ project, active }: { project: Project; active: boolean })
               href={project.live}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 text-center py-2 rounded-lg text-sm font-semibold text-[#0a0e1a] transition-opacity hover:opacity-80"
+              className="flex-1 text-center py-2 rounded-lg text-sm font-semibold text-[var(--navy)] transition-opacity hover:opacity-80"
               style={{ background: project.color }}
             >
               Live ↗
@@ -90,7 +90,7 @@ function ProjectCard({ project, active }: { project: Project; active: boolean })
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 text-center py-2 rounded-lg text-sm font-medium border border-[#1e2a45] text-[#94a3b8] hover:text-white hover:border-[#2e3a55] transition-all"
+              className="flex-1 text-center py-2 rounded-lg text-sm font-medium border border-[var(--border)] text-[var(--text-muted)] hover:text-white hover:border-[var(--text-muted)] transition-all"
             >
               GitHub ↗
             </a>
@@ -120,14 +120,14 @@ export default function Projects({ projects }: ProjectsProps) {
             <button
               onClick={prev}
               disabled={active === 0}
-              className="w-10 h-10 rounded-full glass border border-[#1e2a45] text-[#94a3b8] hover:text-white hover:border-[#00d4ff] transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center"
+              className="w-10 h-10 rounded-full glass border border-[var(--border)] text-[var(--text-muted)] hover:text-white hover:border-[var(--cyan)] transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center"
             >
               ←
             </button>
             <button
               onClick={next}
               disabled={active === projects.length - 1}
-              className="w-10 h-10 rounded-full glass border border-[#1e2a45] text-[#94a3b8] hover:text-white hover:border-[#00d4ff] transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center"
+              className="w-10 h-10 rounded-full glass border border-[var(--border)] text-[var(--text-muted)] hover:text-white hover:border-[var(--cyan)] transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center"
             >
               →
             </button>
@@ -157,8 +157,8 @@ export default function Projects({ projects }: ProjectsProps) {
             onClick={() => setActive(i)}
             className={`rounded-full transition-all duration-300 ${
               i === active
-                ? "w-6 h-2 bg-[#00d4ff]"
-                : "w-2 h-2 bg-[#1e2a45] hover:bg-[#2e3a55]"
+                ? "w-6 h-2 bg-[var(--cyan)]"
+                : "w-2 h-2 bg-[var(--border)] hover:bg-[var(--text-muted)]"
             }`}
           />
         ))}

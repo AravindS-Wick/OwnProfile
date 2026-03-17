@@ -23,33 +23,33 @@ export default function Experience({ experience, certifications, active }: Exper
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Timeline */}
         <div className="lg:col-span-2 relative">
-          <div className="absolute left-3.5 top-2 bottom-2 w-px bg-gradient-to-b from-[#00d4ff] via-[#7c3aed] to-transparent" />
+          <div className="absolute left-3.5 top-2 bottom-2 w-px bg-gradient-to-b from-[var(--cyan)] via-[var(--purple)] to-transparent" />
           <div className="space-y-6">
             {experience.map((exp, i) => (
               <div key={exp.id} className="pl-10 relative" style={reveal(0.1 + i * 0.1)}>
                 <div
-                  className="absolute left-[10px] top-1.5 w-3 h-3 rounded-full border-2 border-[#00d4ff] bg-[#0a0e1a]"
-                  style={{ boxShadow: "0 0 10px #00d4ff55" }}
+                  className="absolute left-[10px] top-1.5 w-3 h-3 rounded-full border-2 border-[var(--cyan)] bg-[var(--navy)]"
+                  style={{ boxShadow: "0 0 10px var(--cyan-tint)" }}
                 />
-                <div className="glass rounded-2xl p-5 border border-[#1e2a45] hover:border-[#00d4ff22] transition-all">
+                <div className="glass rounded-2xl p-5 border border-[var(--border)] hover:border-[var(--cyan-tint)] transition-all">
                   <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
                     <div>
                       <h3 className="font-display font-bold text-white text-base">{exp.role}</h3>
-                      <p className="text-[#00d4ff] text-xs font-semibold">{exp.company}</p>
+                      <p className="text-[var(--cyan)] text-xs font-semibold">{exp.company}</p>
                     </div>
-                    <p className="text-[#64748b] text-xs">{exp.period}</p>
+                    <p className="text-[var(--text-muted)] text-xs">{exp.period}</p>
                   </div>
-                  <p className="text-[#64748b] text-xs leading-relaxed mb-3">{exp.description}</p>
+                  <p className="text-[var(--text-muted)] text-xs leading-relaxed mb-3">{exp.description}</p>
                   <ul className="space-y-1 mb-3">
                     {exp.highlights.map((h) => (
-                      <li key={h} className="flex items-start gap-2 text-xs text-[#64748b]">
-                        <span className="text-[#00d4ff] mt-0.5 flex-shrink-0">▹</span>{h}
+                      <li key={h} className="flex items-start gap-2 text-xs text-[var(--text-muted)]">
+                        <span className="text-[var(--cyan)] mt-0.5 flex-shrink-0">▹</span>{h}
                       </li>
                     ))}
                   </ul>
                   <div className="flex flex-wrap gap-1.5">
                     {exp.tags.map((tag) => (
-                      <span key={tag} className="px-2 py-0.5 rounded text-[10px] bg-[#1e2a45] text-[#64748b]">{tag}</span>
+                      <span key={tag} className="px-2 py-0.5 rounded text-[10px] bg-[var(--border)] text-[var(--text-muted)]">{tag}</span>
                     ))}
                   </div>
                 </div>
@@ -63,7 +63,7 @@ export default function Experience({ experience, certifications, active }: Exper
           <h3 className="font-display font-bold text-white text-base mb-4">Certifications</h3>
           <div className="space-y-3">
             {certifications.map((cert) => (
-              <div key={cert.id} className="glass rounded-2xl p-4 border border-[#1e2a45] hover:border-[#00d4ff22] transition-all hover:-translate-y-0.5">
+              <div key={cert.id} className="glass rounded-2xl p-4 border border-[var(--border)] hover:border-[var(--cyan-tint)] transition-all hover:-translate-y-0.5">
                 <div className="flex items-center gap-3">
                   <div
                     className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0"
@@ -73,12 +73,12 @@ export default function Experience({ experience, certifications, active }: Exper
                   </div>
                   <div>
                     <h4 className="font-semibold text-white text-xs leading-tight">{cert.name}</h4>
-                    <p className="text-[#64748b] text-[10px] mt-0.5">{cert.issuer} · {cert.year}</p>
+                    <p className="text-[var(--text-muted)] text-[10px] mt-0.5">{cert.issuer} · {cert.year}</p>
                   </div>
                 </div>
                 {cert.verifyUrl && (
                   <a href={cert.verifyUrl} target="_blank" rel="noopener noreferrer"
-                    className="mt-2 block text-[10px] text-[#64748b] hover:text-[#00d4ff] transition-colors">
+                    className="mt-2 block text-[10px] text-[var(--text-muted)] hover:text-[var(--cyan)] transition-colors">
                     Verify ↗
                   </a>
                 )}

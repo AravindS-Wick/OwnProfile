@@ -1,73 +1,42 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { useScrollStore } from "@/lib/scrollStore";
 import type { Project } from "@/lib/types";
 
 interface ProjectSceneProps {
   project: Project;
-  sceneIndex: number; // 3, 4, or 5
+  sceneIndex: number;
 }
 
-function VideoBackground({ src }: { src: string }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    v.play().catch(() => {});
-    return () => { v.pause(); };
-  }, []);
-
+// Diagonal stripe texture as SVG data URI
+function DiagonalStripes({ color }: { color: string }) {
+  const encoded = encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><path d='M0 20L20 0M-5 5L5-5M15 25L25 15' stroke='${color}' stroke-width='1' opacity='0.08'/></svg>`
+  );
   return (
-    <div className="absolute inset-0 overflow-hidden">
-      {/* Fallback colour behind video */}
-      <div className="absolute inset-0 bg-[#060911]" />
-
-      <video
-        ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover"
-        style={{ opacity: loaded ? 0.35 : 0, transition: "opacity 1s ease" }}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="none"
-        onCanPlay={() => setLoaded(true)}
-      >
-        <source src={src} type="video/mp4" />
-        <source src={src.replace(".mp4", ".webm")} type="video/webm" />
-      </video>
-
-      {/* Dark gradient so text stays readable */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0a0e1a]/98 via-[#0a0e1a]/75 to-[#0a0e1a]/30" />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0e1a]/60 via-transparent to-[#0a0e1a]/90" />
-    </div>
+    <div
+      className="absolute inset-0 pointer-events-none"
+      style={{ backgroundImage: `url("data:image/svg+xml,${encoded}")` }}
+    />
   );
 }
 
-// Animated code-rain column (purely decorative)
-function CodeRain({ color }: { color: string }) {
-  const chars = "01アイウエオカキクケコ</>{}[]".split("");
+// Big bold index number — editorial background element
+function SceneIndex({ num, color, active }: { num: number; color: string; active: boolean }) {
   return (
-    <div className="absolute right-0 top-0 bottom-0 w-64 overflow-hidden opacity-[0.06] pointer-events-none select-none">
-      {Array.from({ length: 12 }).map((_, col) => (
-        <div
-          key={col}
-          className="absolute top-0 bottom-0 text-[11px] font-mono leading-5 flex flex-col gap-0"
-          style={{
-            left: `${col * 22}px`,
-            color,
-            animation: `rain-fall ${2 + col * 0.3}s linear infinite`,
-            animationDelay: `${col * 0.2}s`,
-          }}
-        >
-          {Array.from({ length: 40 }).map((_, row) => (
-            <span key={row}>{chars[Math.floor(Math.random() * chars.length)]}</span>
-          ))}
-        </div>
-      ))}
+    <div
+      className="absolute right-6 top-1/2 -translate-y-1/2 font-display font-black leading-none select-none pointer-events-none"
+      style={{
+        fontSize: "clamp(12rem, 28vw, 22rem)",
+        color,
+        opacity: active ? 0.07 : 0,
+        transition: "opacity 1s ease 0.2s",
+        WebkitTextStroke: `2px ${color}`,
+        WebkitTextFillColor: "transparent",
+      }}
+      aria-hidden
+    >
+      {String(num).padStart(2, "0")}
     </div>
   );
 }
@@ -75,88 +44,134 @@ function CodeRain({ color }: { color: string }) {
 export default function ProjectScene({ project, sceneIndex }: ProjectSceneProps) {
   const currentScene = useScrollStore((s) => s.currentScene);
   const active = currentScene === sceneIndex;
-
-  // Which project index out of 3 (for labelling)
   const projectNum = sceneIndex - 2; // 1, 2, 3
 
   const reveal = (delay: number) => ({
     opacity: active ? 1 : 0,
-    transform: active ? "translateY(0) scale(1)" : "translateY(28px) scale(0.98)",
-    transition: `all 0.75s cubic-bezier(.16,1,.3,1) ${delay}s`,
+    transform: active ? "translateY(0)" : "translateY(32px)",
+    transition: `opacity 0.75s ease ${delay}s, transform 0.75s cubic-bezier(.16,1,.3,1) ${delay}s`,
+  });
+
+  const slideLeft = (delay: number) => ({
+    opacity: active ? 1 : 0,
+    transform: active ? "translateX(0)" : "translateX(-48px)",
+    transition: `opacity 0.8s ease ${delay}s, transform 0.8s cubic-bezier(.16,1,.3,1) ${delay}s`,
   });
 
   return (
     <div
-      className="absolute inset-0"
+      className="absolute inset-0 overflow-hidden"
       style={{ opacity: active ? 1 : 0, transition: "opacity 0.6s ease" }}
     >
-      {/* Video / colour background */}
-      <VideoBackground src={`/videos/project-${projectNum}.mp4`} />
+      {/* Color accent side-bar — left edge */}
+      <div
+        className="absolute left-0 top-0 bottom-0 w-1 transition-all duration-700"
+        style={{
+          background: `linear-gradient(180deg, transparent, ${project.color}, transparent)`,
+          opacity: active ? 1 : 0,
+        }}
+      />
 
-      {/* Decorative code rain */}
-      <CodeRain color={project.color} />
+      {/* Diagonal texture */}
+      <DiagonalStripes color={project.color} />
+
+      {/* Main gradient overlays */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[var(--navy)]/95 via-[var(--navy)]/75 to-[var(--navy)]/30 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[var(--navy)]/50 via-transparent to-[var(--navy)]/85 pointer-events-none" />
+
+      {/* Giant project number — right ghost */}
+      <SceneIndex num={projectNum} color={project.color} active={active} />
 
       {/* Content */}
       <div className="relative z-10 h-full flex items-center">
         <div className="max-w-7xl mx-auto px-6 sm:px-10 w-full">
-          <div className="max-w-xl">
+          <div className="max-w-2xl">
 
-            {/* Project counter */}
-            <div className="flex items-center gap-4 mb-6" style={reveal(0.05)}>
-              <span
-                className="text-[10px] font-black tracking-[0.35em] uppercase"
-                style={{ color: project.color }}
-              >
-                Project {projectNum} / 3
-              </span>
-              <div className="flex gap-1.5">
+            {/* Project counter row */}
+            <div className="flex items-center gap-4 mb-8" style={reveal(0.05)}>
+              <div className="flex items-center gap-2">
                 {[3, 4, 5].map((idx) => (
                   <span
                     key={idx}
-                    className="w-6 h-0.5 rounded-full transition-all duration-400"
+                    className="rounded-full transition-all duration-500"
                     style={{
-                      background: currentScene === idx ? project.color : "#1e2a45",
+                      width: currentScene === idx ? "28px" : "8px",
+                      height: "3px",
+                      background: currentScene === idx ? project.color : "var(--border)",
                     }}
                   />
                 ))}
               </div>
+              <span
+                className="text-[10px] font-black tracking-[0.3em] uppercase"
+                style={{ color: project.color }}
+              >
+                Project {projectNum} / 3
+              </span>
             </div>
 
-            {/* Title */}
-            <h2
-              className="font-display font-black text-white leading-[1.05] mb-4"
-              style={{ ...reveal(0.15), fontSize: "clamp(2rem, 5vw, 3.8rem)" }}
-            >
-              {project.title}
-            </h2>
+            {/* Title — clip-path slide up */}
+            <div className="overflow-hidden mb-2">
+              <h2
+                className="font-display font-black text-white leading-[1.0]"
+                style={{
+                  fontSize: "clamp(2.4rem, 6vw, 5rem)",
+                  clipPath: active ? "inset(0 0 0 0)" : "inset(0 0 100% 0)",
+                  transition: "clip-path 0.9s cubic-bezier(.16,1,.3,1) 0.15s",
+                }}
+              >
+                {project.title}
+              </h2>
+            </div>
+
+            {/* Colored underline */}
+            <div
+              className="mb-6 h-0.5 rounded-full transition-all duration-700"
+              style={{
+                background: project.color,
+                width: active ? "80px" : "0px",
+                transitionDelay: "0.5s",
+              }}
+            />
 
             {/* Description */}
-            <p className="text-[#94a3b8] text-base leading-relaxed mb-6" style={reveal(0.25)}>
+            <p
+              className="text-[var(--text-muted)] text-base leading-relaxed mb-8 max-w-lg"
+              style={reveal(0.3)}
+            >
               {project.description}
             </p>
 
             {/* Tags */}
-            <div className="flex flex-wrap gap-2 mb-8" style={reveal(0.3)}>
+            <div className="flex flex-wrap gap-2 mb-8" style={reveal(0.4)}>
               {project.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="px-3 py-1 rounded-lg text-xs font-semibold"
-                  style={{ background: `${project.color}20`, color: project.color }}
+                  className="px-3 py-1 rounded-full text-xs font-semibold border"
+                  style={{
+                    borderColor: `${project.color}40`,
+                    color: project.color,
+                    background: `${project.color}0d`,
+                  }}
                 >
                   {tag}
                 </span>
               ))}
             </div>
 
-            {/* CTA links */}
-            <div className="flex gap-3" style={reveal(0.38)}>
+            {/* CTAs */}
+            <div className="flex gap-4" style={slideLeft(0.5)}>
               {project.live && (
                 <a
                   href={project.live}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-6 py-2.5 rounded-xl text-sm font-bold text-[#0a0e1a] hover:scale-105 active:scale-95 transition-transform"
-                  style={{ background: project.color }}
+                  className="px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                  style={{
+                    background: project.color,
+                    color: "var(--navy)",
+                    boxShadow: `0 0 0 0 ${project.color}`,
+                  }}
                 >
                   Live Demo ↗
                 </a>
@@ -166,8 +181,8 @@ export default function ProjectScene({ project, sceneIndex }: ProjectSceneProps)
                   href={project.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-6 py-2.5 rounded-xl text-sm font-medium border text-[#94a3b8] hover:text-white hover:border-[#2e3a55] transition-all glass"
-                  style={{ borderColor: "#1e2a45" }}
+                  className="px-6 py-2.5 rounded-full text-sm font-medium border text-[var(--text-muted)] hover:text-white transition-all hover:border-white"
+                  style={{ borderColor: "var(--border)" }}
                 >
                   GitHub ↗
                 </a>
@@ -177,13 +192,20 @@ export default function ProjectScene({ project, sceneIndex }: ProjectSceneProps)
         </div>
       </div>
 
-      {/* Bottom: "video playing" indicator */}
+      {/* Bottom-right: project status pill */}
       <div
-        className="absolute bottom-8 right-8 flex items-center gap-2 text-[10px] tracking-widest uppercase"
-        style={{ color: project.color, opacity: 0.5 }}
+        className="absolute bottom-8 right-8 flex items-center gap-2 text-[10px] font-semibold tracking-widest uppercase"
+        style={{
+          color: project.color,
+          opacity: active ? 0.6 : 0,
+          transition: "opacity 0.5s ease 0.8s",
+        }}
       >
-        <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: project.color }} />
-        Video running in background
+        <span
+          className="w-1.5 h-1.5 rounded-full animate-pulse"
+          style={{ background: project.color }}
+        />
+        {project.live ? "Live" : "In development"}
       </div>
     </div>
   );

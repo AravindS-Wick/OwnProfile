@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useScrollStore } from "@/lib/scrollStore";
 import type { Service } from "@/lib/types";
 
@@ -19,20 +20,21 @@ const ICONS: Record<string, string> = {
 export default function Services({ services }: ServicesProps) {
   const currentScene = useScrollStore((s) => s.currentScene);
   const active = currentScene === 6;
+  const [focused, setFocused] = useState(0);
+  const current = services[focused];
 
   const reveal = (delay: number) => ({
     opacity: active ? 1 : 0,
-    transform: active ? "translateY(0)" : "translateY(32px)",
-    transition: `all 0.7s cubic-bezier(.16,1,.3,1) ${delay}s`,
+    transform: active ? "translateY(0)" : "translateY(28px)",
+    transition: `opacity 0.7s ease ${delay}s, transform 0.7s cubic-bezier(.16,1,.3,1) ${delay}s`,
   });
 
-  const handleHire = (serviceId: string) => {
-    // navigate to contact scene (index 7)
+  const handleHire = () => {
     (window as Window & { scrollToScene?: (i: number) => void }).scrollToScene?.(7);
     setTimeout(() => {
       const select = document.querySelector<HTMLSelectElement>('[name="service"]');
-      if (select) {
-        select.value = serviceId;
+      if (select && current) {
+        select.value = current.id;
         select.dispatchEvent(new Event("change", { bubbles: true }));
       }
     }, 900);
@@ -43,69 +45,171 @@ export default function Services({ services }: ServicesProps) {
       className="absolute inset-0 flex items-center"
       style={{ opacity: active ? 1 : 0, transition: "opacity 0.5s ease" }}
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0e1a]/70 via-[#0a0e1a]/50 to-[#0a0e1a]/80 pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0a0e1a]/80 via-transparent to-[#0a0e1a]/40 pointer-events-none" />
+      {/* Background overlays */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[var(--navy)]/70 via-[var(--navy)]/50 to-[var(--navy)]/80 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[var(--navy)]/80 via-transparent to-[var(--navy)]/40 pointer-events-none" />
+
+      {/* Large background number */}
+      <div
+        className="absolute -top-8 -left-4 font-display font-black select-none pointer-events-none"
+        style={{
+          fontSize: "clamp(6rem, 18vw, 16rem)",
+          lineHeight: 1,
+          opacity: active ? 0.35 : 0,
+          transition: "opacity 1s ease 0.3s",
+          WebkitTextStroke: "2px var(--border)",
+          WebkitTextFillColor: "transparent",
+        }}
+        aria-hidden
+      >
+        06
+      </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10 w-full">
-        <div className="text-center mb-10" style={reveal(0.05)}>
-          <p className="section-label">What I Offer</p>
-          <h2
-            className="font-display font-black text-white mt-2"
-            style={{ fontSize: "clamp(2rem, 4.5vw, 3.5rem)" }}
-          >
-            Services & <span className="text-gradient">Pricing</span>
-          </h2>
-        </div>
+        <div className="grid lg:grid-cols-12 gap-8 items-start">
 
-        {/* Services grid — horizontal scroll on mobile */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-          {services.map((svc, i) => (
-            <div
-              key={svc.id}
-              className="glass rounded-2xl p-4 border border-[#1e2a45] flex flex-col group hover:border-[#00d4ff33] hover:-translate-y-1 transition-all duration-300"
-              style={reveal(0.1 + i * 0.06)}
+          {/* ── Left: heading + service list ── */}
+          <div className="lg:col-span-4">
+            <p className="section-label mb-4" style={reveal(0.05)}>What I Offer</p>
+            <h2
+              className="font-display font-black text-white leading-[1.15] mb-8 pb-1"
+              style={{ ...reveal(0.15), fontSize: "clamp(2rem, 4vw, 3.8rem)" }}
             >
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center text-xl mb-3 flex-shrink-0"
-                style={{ background: `${svc.color}18` }}
-              >
-                {ICONS[svc.icon] ?? "💡"}
-              </div>
-              <h3 className="font-display font-bold text-white text-sm mb-1">{svc.title}</h3>
-              <p className="text-[#64748b] text-xs leading-relaxed mb-3 flex-1">{svc.description}</p>
-              <div className="mt-auto">
-                <p className="text-xs font-semibold mb-2" style={{ color: svc.color }}>
-                  {svc.price}
-                </p>
+              Services &amp;<br />
+              <span className="text-gradient">Pricing</span>
+            </h2>
+
+            <div className="space-y-1" style={reveal(0.25)}>
+              {services.map((svc, i) => (
                 <button
+                  key={svc.id}
                   type="button"
-                  onClick={() => handleHire(svc.id)}
-                  className="w-full py-1.5 rounded-lg text-xs font-bold text-[#0a0e1a] hover:opacity-80 transition-opacity"
-                  style={{ background: svc.color }}
+                  onClick={() => setFocused(i)}
+                  className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl text-left transition-all duration-300 group"
+                  style={{
+                    background: focused === i ? `${svc.color}10` : "transparent",
+                    borderLeft: `3px solid ${focused === i ? svc.color : "transparent"}`,
+                  }}
                 >
-                  Hire →
+                  <span
+                    className="w-8 h-8 rounded-xl flex items-center justify-center text-base flex-shrink-0 transition-all duration-300"
+                    style={{ background: `${svc.color}18` }}
+                  >
+                    {ICONS[svc.icon] ?? "💡"}
+                  </span>
+                  <div className="min-w-0">
+                    <p
+                      className="text-sm font-semibold transition-colors duration-200"
+                      style={{ color: focused === i ? "white" : "var(--text-muted)" }}
+                    >
+                      {svc.title}
+                    </p>
+                    <p
+                      className="text-xs transition-colors duration-200"
+                      style={{ color: focused === i ? svc.color : "var(--border)" }}
+                    >
+                      {svc.price}
+                    </p>
+                  </div>
                 </button>
+              ))}
+            </div>
+          </div>
+
+          {/* ── Right: focused service detail ── */}
+          {current && (
+            <div className="lg:col-span-8" style={reveal(0.2)}>
+              <div
+                className="rounded-3xl p-8 border transition-all duration-500"
+                style={{
+                  background: `${current.color}06`,
+                  borderColor: `${current.color}25`,
+                }}
+              >
+                {/* Header */}
+                <div className="flex items-start justify-between gap-4 mb-6">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
+                      style={{ background: `${current.color}18` }}
+                    >
+                      {ICONS[current.icon] ?? "💡"}
+                    </div>
+                    <div>
+                      <h3 className="font-display font-black text-white text-xl">{current.title}</h3>
+                      <p className="text-sm font-bold mt-0.5" style={{ color: current.color }}>
+                        {current.price}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleHire}
+                    className="flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 hover:scale-105"
+                    style={{ background: current.color, color: "var(--navy)" }}
+                  >
+                    Hire →
+                  </button>
+                </div>
+
+                {/* Description */}
+                <p className="text-[var(--text-muted)] text-sm leading-relaxed mb-6">
+                  {current.description}
+                </p>
+
+                {/* Divider */}
+                <div className="h-px mb-6" style={{ background: `${current.color}20` }} />
+
+                {/* Features */}
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {current.features?.map((f, i) => (
+                    <div key={i} className="flex items-start gap-3">
+                      <span
+                        className="mt-0.5 text-xs flex-shrink-0 font-bold"
+                        style={{ color: current.color }}
+                      >
+                        ▹
+                      </span>
+                      <span className="text-sm text-white">{f}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Bottom CTA strip */}
+                <div
+                  className="mt-8 pt-6 flex items-center justify-between border-t"
+                  style={{ borderColor: `${current.color}20` }}
+                >
+                  <p className="text-xs text-[var(--text-muted)]">
+                    Need something custom?{" "}
+                    <button
+                      type="button"
+                      onClick={() => (window as Window & { scrollToScene?: (i: number) => void }).scrollToScene?.(7)}
+                      className="underline hover:text-white transition-colors"
+                    >
+                      Let&apos;s discuss →
+                    </button>
+                  </p>
+                  <div className="flex gap-1">
+                    {services.map((svc, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        aria-label={`View ${svc.title}`}
+                        onClick={() => setFocused(i)}
+                        className="rounded-full transition-all duration-300"
+                        style={{
+                          width: focused === i ? "20px" : "6px",
+                          height: "6px",
+                          background: focused === i ? current.color : "var(--border)",
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
-          ))}
-        </div>
-
-        {/* Custom scope strip */}
-        <div
-          className="mt-6 glass rounded-2xl px-6 py-4 border border-[#1e2a45] flex flex-col sm:flex-row items-center justify-between gap-4"
-          style={reveal(0.5)}
-        >
-          <div>
-            <h3 className="font-display font-bold text-white text-base">Need something custom?</h3>
-            <p className="text-[#64748b] text-xs mt-0.5">Unique scope? Let&apos;s discuss.</p>
-          </div>
-          <button
-            type="button"
-            onClick={() => (window as Window & { scrollToScene?: (i: number) => void }).scrollToScene?.(7)}
-            className="flex-shrink-0 px-6 py-2.5 rounded-xl font-bold text-sm bg-gradient-to-r from-[#00d4ff] to-[#7c3aed] text-[#0a0e1a] hover:opacity-90 transition-opacity"
-          >
-            Let&apos;s Talk →
-          </button>
+          )}
         </div>
       </div>
     </div>

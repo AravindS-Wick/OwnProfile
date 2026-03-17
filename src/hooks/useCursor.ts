@@ -67,7 +67,8 @@ export function useCursor() {
     };
 
     const onEnter = (e: MouseEvent) => {
-      const el = e.target as HTMLElement;
+      const el = e.target;
+      if (!(el instanceof Element)) return;
       if (el.closest("a,button,[role=button]")) {
         isHovering.current = true;
         if (ringRef.current) {
@@ -79,7 +80,8 @@ export function useCursor() {
     };
 
     const onLeave = (e: MouseEvent) => {
-      const el = e.target as HTMLElement;
+      const el = e.target;
+      if (!(el instanceof Element)) return;
       if (el.closest("a,button,[role=button]")) {
         isHovering.current = false;
         if (ringRef.current) {
